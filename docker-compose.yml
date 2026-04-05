@@ -51,12 +51,12 @@ services:
     networks:
       - dev-network
 
-  go-dev:
-    image: mcr.microsoft.com/devcontainers/go
-    container_name: go-development
+  go-service:
+    image: debian:stable-slim
+    container_name: go-app
     volumes:
-      - ./bin:/workspaces/goapp
-    working_dir: /workspaces/goapp
+      - ./bin:/goapp
+    working_dir: /goapp
     ports:
       - "${GO_API_PORT}:${GO_API_PORT}"
     environment:
