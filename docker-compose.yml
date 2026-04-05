@@ -1,0 +1,78 @@
+services:
+  postgres_db:
+    image: postgres:18-alpine
+    container_name: walletDB
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SERVICE_DB_USER: ${SERVICE_DB_USER}
+      SERVICE_DB_PASSWORD: ${SERVICE_DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db-user.sh:/docker-entrypoint-initdb.d/01-init-db-user.sh
+    command: >
+      postgres -c max_connections=50
+               -c shared_buffers=1GB
+               -c effective_cache_size=4GB
+               -c work_mem=16MB
+               -c maintenance_work_mem=512MB
+               -c random_page_cost=1.1
+               -c temp_file_limit=10GB
+               -c log_min_duration_statement=200ms
+               -c idle_in_transaction_session_timeout=10s
+               -c lock_timeout=1s
+               -c statement_timeout=60s
+               -c shared_preload_libraries=pg_stat_statements
+               -c pg_stat_statements.max=10000
+               -c pg_stat_statements.track=all
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dev-network
+
+  migrations:
+    image: migrate/migrate:latest
+    container_name: migrations-run
+    volumes:
+      - ./migrations:/migrations:ro
+    command: >
+      -path=/migrations
+      -database ${MIGRATE_DATABASE_URL}
+      up
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    networks:
+      - dev-network
+
+  go-dev:
+    image: mcr.microsoft.com/devcontainers/go
+    container_name: go-development
+    volumes:
+      - ./bin:/workspaces/goapp
+    working_dir: /workspaces/goapp
+    ports:
+      - "${GO_API_PORT}:${GO_API_PORT}"
+    environment:
+      SERVICE_DATABASE_URL: ${SERVICE_DATABASE_URL}
+    networks:
+      - dev-network
+    command: ./api
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-data:
+
+networks:
+  dev-network:
+    driver: bridge
