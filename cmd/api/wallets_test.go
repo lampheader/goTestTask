@@ -63,7 +63,6 @@ func TestShowWalletBalance(t *testing.T) {
 
 			router.ServeHTTP(rr, req)
 
-			// Если ваш валидатор возвращает 400 вместо 422, просто поменяйте wantStatus в таблице выше
 			assert.Equal(t, rr.Code, tt.wantStatus)
 		})
 	}
