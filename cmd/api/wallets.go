@@ -22,7 +22,7 @@ func (app *application) createWalletHandler(w http.ResponseWriter, r *http.Reque
 	headers := make(http.Header)
 	headers.Set("Location", fmt.Sprintf("/api/v1/wallets/%s", wallet.UUID))
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"message": "wallet successfully created"}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"message": "wallet successfully created.UUID: " + wallet.UUID.String()}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
