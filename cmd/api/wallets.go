@@ -83,27 +83,16 @@ func (app *application) changeWalletBalanceHandler(w http.ResponseWriter, r *htt
 		return
 	}
 
-	attempts := 0
-	maxAttempts := 60
+	err = app.models.Wallets.Update(wallet)
 
-	for {
-		err = app.models.Wallets.Update(wallet)
-
-		if err == nil {
-			break
-		} else {
-			switch {
-			case errors.Is(err, data.ErrEditConflict):
-				attempts++
-				if attempts >= maxAttempts {
-					app.editConflictResponse(w, r)
-					return
-				}
-			default:
-				app.serverErrorResponse(w, r, err)
-				return
-			}
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			app.editConflictResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
 		}
+		return
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"wallet": wallet}, nil)
