@@ -24,8 +24,14 @@ func TestCreateWalletHandler(t *testing.T) {
 
 	assert.Equal(t, rr.Code, http.StatusCreated)
 
-	if rr.Header().Get("Location") == "" {
+	location := rr.Header().Get("Location")
+	if location == "" {
 		t.Error("expected Location header to be set")
+	}
+
+	uuidStr := location[len("/api/v1/wallets/"):]
+	if _, err := uuid.Parse(uuidStr); err != nil {
+		t.Errorf("invalid UUID in Location header: %s", uuidStr)
 	}
 
 	bodyBytes := rr.Body.Bytes()
@@ -37,7 +43,7 @@ func TestCreateWalletHandler(t *testing.T) {
 		t.Fatalf("failed to decode response: %v. Raw body: %s", err, string(bodyBytes))
 	}
 
-	assert.Equal(t, response["message"], "wallet successfully created")
+	assert.Equal(t, response["message"], "wallet successfully created.UUID: "+uuidStr)
 }
 
 func TestShowWalletBalance(t *testing.T) {
