@@ -1,12 +1,12 @@
 # Go test task
 
 ## Запуск
-docker compose --env-file ./config.env up -d
+`docker compose --env-file ./config.env up -d`
 
 стандартный порт: 4000
 
 ## Тесты
-go test ./cmd/api -v
+`go test ./cmd/api -v`
 
 ## API endpoints
 <table>
