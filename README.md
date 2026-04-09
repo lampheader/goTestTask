@@ -36,7 +36,7 @@
         <td>создание нового кошелька</td>
     </tr>
     <tr>
-        <td>GET</td>
+        <td>DELETE</td>
         <td>/api/v1/wallets/:uuid</td>
         <td>удаление кошелька</td>
     </tr>
