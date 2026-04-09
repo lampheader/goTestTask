@@ -1,7 +1,9 @@
 # Go test task
 
 ## Запуск
-docker compose --env-file ./config.env up -d  
+docker compose --env-file ./config.env up -d
+
+стандартный порт: 4000
 
 ## Тесты
 go test ./cmd/api -v
@@ -20,7 +22,7 @@ go test ./cmd/api -v
     </tr>
     <tr>
         <td>POST</td>
-        <td>>/api/v1/wallet</td>
+        <td>/api/v1/wallet</td>
         <td>изменение баланса кошелька</td>
     </tr>
     <tr>
