@@ -1,13 +1,41 @@
-Go test task
+# Go test task
 
-Запуск: 
-docker compose --env-file ./config.env up -d
+## Запуск
+docker compose --env-file ./config.env up -d  
 
-http.MethodGet,    "localhost:4000/api/v1/healthcheck"   -   проверка доступности сервиса
-http.MethodPost,   "localhost:4000/api/v1/wallet"        -   изменение баланса кошелька
-http.MethodGet,    "localhost:4000/api/v1/wallets/:uuid" -   просмотр баланса кошелька
-http.MethodGet,    "localhost:4000/api/v1/wallets"       -   создание нового кошелька
-http.MethodDelete, "localhost:4000/api/v1/wallets/:uuid" -   удаление кошелька
-
-Тесты:
+## Тесты
 go test ./cmd/api -v
+
+## API endpoints
+<table>
+    <tr>
+        <th>http метод</th>
+        <th>api endpoint</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td>GET</td>
+        <td>/api/v1/healthcheck</td>
+        <td>проверка доступности сервиса</td>
+    </tr>
+    <tr>
+        <td>POST</td>
+        <td>>/api/v1/wallet</td>
+        <td>изменение баланса кошелька</td>
+    </tr>
+    <tr>
+        <td>GET</td>
+        <td>/api/v1/wallets/:uuid</td>
+        <td>просмотр баланса кошелька</td>
+    </tr>
+    <tr>
+        <td>GET</td>
+        <td>/api/v1/wallets</td>
+        <td>создание нового кошелька</td>
+    </tr>
+    <tr>
+        <td>GET</td>
+        <td>/api/v1/wallets/:uuid</td>
+        <td>удаление кошелька</td>
+    </tr>
+</table>
